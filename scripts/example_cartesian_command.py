@@ -102,14 +102,19 @@ class DescartesExample(object):
     # for this tutorial.
     (plan, fraction) = self.move_group.compute_cartesian_path(waypoints,   # waypoints to follow
                                                               0.01,        # eef_step
-                                                              0)         # jump_threshold
+                                                              0.0)         # jump_threshold
     return plan, fraction
+
+  def execute(self, plan):
+      self.move_group.execute(plan, wait=True)
 
 def main(scale, wait_for_shutdown):
   example = DescartesExample()
   plan, fraction = example.plan_cartesian_path(scale)
   if wait_for_shutdown:
-    raw_input("press enter for shutdown")
+    if fraction > 0.5:
+        input("press enter for shutdown")
+        example.execute(plan)
 
 
 if __name__ == '__main__':
